@@ -7,12 +7,12 @@
 ## Fait:
 - User
 - Video
+- Like
 
-## A vérifier
+## A vérifier:
 - Comment
 - Hashtag
 - History
-- Like
 - Playlist
 - Subscription
 
@@ -22,4 +22,6 @@
 - Page Inscription
 - Page Connexion
 - Page Accueil
+
+## A compléter:
 - Page Video

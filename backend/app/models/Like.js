@@ -1,20 +1,28 @@
-const pool = require('../database/db');
+const db = require('../database/db');
 
-const Like = {
-  create: (id_user, id_video) => {
-    const sql = 'INSERT INTO Likes (id_user, id_video) VALUES (?, ?)';
-    return pool.query(sql, [id_user, id_video]);
-  },
-
-  delete: (id_user, id_video) => {
-    const sql = 'DELETE FROM Likes WHERE id_user = ? AND id_video = ?';
-    return pool.query(sql, [id_user, id_video]);
-  },
-
-  countByVideo: (id_video) => {
-    const sql = 'SELECT COUNT(*) AS totalLikes FROM Likes WHERE id_video = ?';
-    return pool.query(sql, [id_video]);
-  }
+const create = async (id_user, id_video) => {
+  const query = 'INSERT INTO Likes (user_id, video_id) VALUES (?, ?)';
+  return db.query(query, [id_user, id_video]);
 };
 
-module.exports = Like;
+const deleteLike = async (id_user, id_video) => {
+  const query = 'DELETE FROM Likes WHERE user_id = ? AND video_id = ?';
+  return db.query(query, [id_user, id_video]);
+};
+
+const countByVideo = async (id_video) => {
+  const query = 'SELECT COUNT(*) AS totalLikes FROM Likes WHERE video_id = ?';
+  return db.query(query, [id_video]);
+};
+
+const getUserLike = async (id_user, id_video) => {
+  const query = 'SELECT * FROM Likes WHERE user_id = ? AND video_id = ?';
+  return db.query(query, [id_user, id_video]);
+};
+
+module.exports = {
+  create,
+  delete: deleteLike,
+  countByVideo,
+  getUserLike
+};

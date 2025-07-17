@@ -41,13 +41,7 @@ app.use('/upload/video', express.static(path.join(__dirname, 'upload/video')));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/comments', commentRoutes);
-app.use('/api/hashtags', hashtagRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
-app.use('/api/likes', likeRoutes);
-app.use('/api/history', historyRoutes);
-app.use('/api/playlists', playlistRoutes);
+
 
 // 📁 Connexion à la base
 require('./app/database/db');
@@ -55,6 +49,13 @@ require('./app/database/db');
 // 📚 Routes API
 app.use('/api/users', userRoutes);
 app.use('/api/channels', channelRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/hashtags', hashtagRoutes);
+app.use('/api/videos', videoRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/history', historyRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 
 // 🧪 Route de test

@@ -40,3 +40,15 @@ exports.countLikes = async (req, res) => {
     return res.status(500).json({ error: err.sqlMessage });
   }
 };
+
+exports.userHasLiked = async (req, res) => {
+  const id_user = req.user.id;
+  const id_video = req.params.id_video;
+
+  try {
+    const [rows] = await Like.getUserLike(id_user, id_video);
+    return res.json({ liked: rows.length > 0 });
+  } catch (err) {
+    return res.status(500).json({ error: err.sqlMessage });
+  }
+};

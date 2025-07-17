@@ -8,7 +8,7 @@ export default function VoidPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Navbar />
         <main style={{ flex: 1, padding: '10px' }}>
-          {/* Contenu vide */}
+
         </main>
       </div>
     </div>

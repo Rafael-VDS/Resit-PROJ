@@ -19,7 +19,7 @@ export default function HomePage() {
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <main style={{ flex: 1, overflowY: 'auto', padding: '10px' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '10px', backgroundColor: 'white'  }}>
           {videos.length === 0 ? (
             <p>Aucune vidéo trouvée.</p>
           ) : (
