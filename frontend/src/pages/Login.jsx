@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const serverIp = process.env.REACT_APP_SERVER_IP
+  const serverIp = process.env.REACT_APP_SERVER_IP;
 
   const handleLogin = async () => {
     const res = await fetch(`${serverIp}/api/users/login`, {
@@ -22,33 +22,92 @@ export default function Login() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${serverIp}/api/users/google`;
+  };
+
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-sm bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Connexion</h2>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#eee'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '400px',
+        backgroundColor: 'white',
+        padding: '20px',
+        border: '1px solid gray'
+      }}>
+        <h2 style={{ fontSize: '18px', marginBottom: '20px', textAlign: 'center' }}>Connexion</h2>
+
         <input
-          className="w-full mb-4 p-2 border rounded"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
         />
+
         <input
-          className="w-full mb-4 p-2 border rounded"
           type="password"
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
         />
+
         <button
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
           onClick={handleLogin}
+          style={{
+            width: '100%',
+            backgroundColor: 'gray',
+            color: 'white',
+            padding: '8px',
+            border: 'none',
+            marginBottom: '10px'
+          }}
         >
           Se connecter
         </button>
-        <p className="text-center text-sm mt-4">
+
+        <button
+          onClick={handleGoogleLogin}
+          style={{
+            width: '100%',
+            backgroundColor: 'white',
+            color: '#444',
+            padding: '8px',
+            border: '1px solid #ccc',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px'
+          }}
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
+            alt="Google Logo"
+            style={{ width: '20px', height: '20px' }}
+          />
+          Connexion avec Google
+        </button>
+
+        <p style={{ textAlign: 'center', fontSize: '13px', marginTop: '15px' }}>
           Pas de compte ?{" "}
-          <Link to="/register" className="text-blue-500 hover:underline">
+          <Link to="/register" style={{ color: 'blue', textDecoration: 'underline' }}>
             S'inscrire
           </Link>
         </p>

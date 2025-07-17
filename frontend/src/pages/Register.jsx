@@ -5,10 +5,16 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const serverIp = process.env.REACT_APP_SERVER_IP
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const serverIp = process.env.REACT_APP_SERVER_IP;
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
     const res = await fetch(`${serverIp}/api/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -18,46 +24,101 @@ export default function Register() {
     const data = await res.json();
     if (res.ok) {
       alert("Inscription réussie !");
-      navigate("/");
+      navigate("/login");
     } else {
       alert(data.error);
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-sm bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Inscription</h2>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#eee'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '400px',
+        backgroundColor: 'white',
+        padding: '20px',
+        border: '1px solid gray'
+      }}>
+        <h2 style={{ fontSize: '18px', marginBottom: '20px', textAlign: 'center' }}>Inscription</h2>
+
         <input
-          className="w-full mb-4 p-2 border rounded"
           type="email"
           placeholder="Email"
           value={email}
+          maxLength={50}
           onChange={(e) => setEmail(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
         />
+
         <input
-          className="w-full mb-4 p-2 border rounded"
           type="text"
           placeholder="Nom d'utilisateur"
           value={username}
+          maxLength={50}
           onChange={(e) => setUsername(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
         />
+
         <input
-          className="w-full mb-4 p-2 border rounded"
           type="password"
           placeholder="Mot de passe"
           value={password}
+          maxLength={50}
           onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
         />
+
+        <input
+          type="password"
+          placeholder="Confirmer le mot de passe"
+          value={confirmPassword}
+          maxLength={50}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            marginBottom: '10px',
+            border: '1px solid #ccc'
+          }}
+        />
+
         <button
-          className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded"
           onClick={handleRegister}
+          style={{
+            width: '100%',
+            backgroundColor: 'gray',
+            color: 'white',
+            padding: '8px',
+            border: 'none'
+          }}
         >
           S'inscrire
         </button>
-        <p className="text-center text-sm mt-4">
+
+        <p style={{ textAlign: 'center', fontSize: '13px', marginTop: '15px' }}>
           Déjà un compte ?{" "}
-          <Link to="/" className="text-blue-500 hover:underline">
+          <Link to="/login" style={{ color: 'blue', textDecoration: 'underline' }}>
             Se connecter
           </Link>
         </p>

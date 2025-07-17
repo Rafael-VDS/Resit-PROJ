@@ -21,7 +21,6 @@ pool.getConnection(async (err, connection) => {
     try {
         console.log("🛠️ Vérification / création des tables...");
 
-       
         const tables = [
             `CREATE TABLE IF NOT EXISTS Users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,30 +28,22 @@ pool.getConnection(async (err, connection) => {
                 username VARCHAR(50) NOT NULL UNIQUE,
                 password VARCHAR(255),
                 image VARCHAR(255),
+                description TEXT, -- optionnel : description de la chaîne
                 oauth_provider VARCHAR(50),
                 oauth_id VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )`,
 
-            `CREATE TABLE IF NOT EXISTS Channels (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                name VARCHAR(100) NOT NULL,
-                description TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
-            )`,
-
             `CREATE TABLE IF NOT EXISTS Videos (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                channel_id INT NOT NULL,
+                user_id INT NOT NULL,
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 video_url VARCHAR(255) NOT NULL,
                 thumbnail_url VARCHAR(255),
                 is_public BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (channel_id) REFERENCES Channels(id) ON DELETE CASCADE
+                FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
             )`,
 
             `CREATE TABLE IF NOT EXISTS Hashtags (
@@ -117,11 +108,11 @@ pool.getConnection(async (err, connection) => {
             `CREATE TABLE IF NOT EXISTS Subscriptions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT NOT NULL,
-                channel_id INT NOT NULL,
+                target_user_id INT NOT NULL,
                 subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
-                FOREIGN KEY (channel_id) REFERENCES Channels(id) ON DELETE CASCADE,
-                UNIQUE (user_id, channel_id)
+                FOREIGN KEY (target_user_id) REFERENCES Users(id) ON DELETE CASCADE,
+                UNIQUE (user_id, target_user_id)
             )`
         ];
 

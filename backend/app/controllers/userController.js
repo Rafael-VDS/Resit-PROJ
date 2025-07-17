@@ -9,25 +9,19 @@ const jwtSecret = process.env.JWT_SECRET;
 exports.register = async (req, res) => {
   const { email, username, password } = req.body;
 
-  // Vérification des champs
   if (!email || !username || !password) {
     return res.status(400).json({ error: 'Champs manquants.' });
   }
 
   try {
-    // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Création dans la base de données
     const [result] = await User.create(email, username, hashedPassword);
 
-    // Réponse
     res.status(201).json({
       id: result.insertId,
       email,
       username
     });
-
   } catch (err) {
     const status = err.code === 'ER_DUP_ENTRY' ? 409 : 500;
     res.status(status).json({ error: err.sqlMessage });
@@ -50,14 +44,12 @@ exports.login = async (req, res) => {
     }
 
     const user = rows[0];
-
-    // Vérifie le mot de passe
     const ok = await bcrypt.compare(password, user.password);
+
     if (!ok) {
       return res.status(401).json({ error: 'Mot de passe incorrect.' });
     }
 
-    // Génère un token JWT
     const token = jwt.sign(
       { id: user.id, email: user.email },
       jwtSecret,
@@ -65,13 +57,12 @@ exports.login = async (req, res) => {
     );
 
     res.json({ token });
-
   } catch (err) {
     res.status(500).json({ error: err.sqlMessage });
   }
 };
 
-// 👤 Récupérer le profil utilisateur connecté
+// 👤 Récupérer le profil utilisateur
 exports.getProfile = async (req, res) => {
   const userId = req.user.id;
 
@@ -83,7 +74,6 @@ exports.getProfile = async (req, res) => {
     }
 
     res.json(rows[0]);
-
   } catch (err) {
     res.status(500).json({ error: err.sqlMessage });
   }
@@ -93,7 +83,6 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   const userId = req.user.id;
   const imageFilename = req.file ? req.file.filename : null;
-
   const { email, username, password } = req.body;
 
   if (!email && !username && !password && !imageFilename) {
@@ -126,11 +115,20 @@ exports.updateProfile = async (req, res) => {
     }
 
     await User.update(userId, fields, values);
-
     res.json({ message: 'Profil mis à jour.' });
-
   } catch (err) {
     const status = err.code === 'ER_DUP_ENTRY' ? 409 : 500;
     res.status(status).json({ error: err.sqlMessage });
+  }
+};
+
+// ❌ Supprimer un utilisateur
+exports.deleteUser = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    await User.delete(userId);
+    res.json({ message: 'Utilisateur supprimé.' });
+  } catch (err) {
+    res.status(500).json({ error: err.sqlMessage });
   }
 };

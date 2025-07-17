@@ -2,15 +2,15 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Dossiers de destination
-const videoDir = path.join(__dirname, '..', '..', 'upload', 'video');
-const imageDir = path.join(__dirname, '..', '..', 'upload', 'image', 'video_image');
+// Chemins complets
+const videoDir = path.join(__dirname, '..', 'upload', 'video');
+const imageDir = path.join(__dirname, '..', 'upload', 'image', 'video_image');
 
-// Création des dossiers si pas existants
+// Crée les dossiers s'ils n'existent pas
 if (!fs.existsSync(videoDir)) fs.mkdirSync(videoDir, { recursive: true });
 if (!fs.existsSync(imageDir)) fs.mkdirSync(imageDir, { recursive: true });
 
-// Logique de destination dynamique
+// Stockage dynamique selon mimetype
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.mimetype.startsWith('video/')) {
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     } else if (file.mimetype.startsWith('image/')) {
       cb(null, imageDir);
     } else {
-      cb(new Error('Fichier non supporté'), null);
+      cb(new Error('Type de fichier non supporté'), null);
     }
   },
   filename: (req, file, cb) => {
@@ -28,5 +28,4 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
 module.exports = upload;

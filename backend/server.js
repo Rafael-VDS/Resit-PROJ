@@ -3,7 +3,17 @@ const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
 const dotenv = require('dotenv');
+const path = require('path');
+
 const userRoutes = require('./app/routes/userRoutes');
+const channelRoutes = require('./app/routes/channelRoutes');
+const commentRoutes = require('./app/routes/commentRoutes');
+const hashtagRoutes = require('./app/routes/hashtagRoutes');
+const videoRoutes = require('./app/routes/videoRoutes');
+const subscriptionRoutes = require('./app/routes/subscriptionRoutes');
+const likeRoutes = require('./app/routes/likeRoutes');
+const historyRoutes = require('./app/routes/historyRoutes');
+const playlistRoutes = require('./app/routes/playlistRoutes');
 
 // 🔧 Charge les variables d'environnement
 dotenv.config();
@@ -20,17 +30,32 @@ const io = new Server(server, {
     methods: ['GET', 'POST']
   }
 });
+app.use('/upload', express.static(path.join(__dirname, 'upload/video')));
+app.use(
+  '/upload/video_image',
+  express.static(path.join(__dirname, 'upload/image/video_image'))
+);
+app.use('/upload/video', express.static(path.join(__dirname, 'upload/video')));
 
 // 📶 Middleware global
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/comments', commentRoutes);
+app.use('/api/hashtags', hashtagRoutes);
+app.use('/api/videos', videoRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/history', historyRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 // 📁 Connexion à la base
 require('./app/database/db');
 
 // 📚 Routes API
 app.use('/api/users', userRoutes);
+app.use('/api/channels', channelRoutes);
+
 
 // 🧪 Route de test
 app.get('/', (req, res) => {
