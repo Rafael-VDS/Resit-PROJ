@@ -1,54 +1,70 @@
 const History = require('../models/History');
 
 exports.addToHistory = async (req, res) => {
-  const id_user = req.user.id;
-  const { id_video } = req.body;
+  const user_id = req.user.id;
+  const { video_id } = req.body;
 
-  if (!id_video)
-    return res.status(400).json({ error: 'id_video manquant.' });
+  if (!video_id)
+    return res.status(400).json({ error: 'video_id manquant.' });
 
   try {
-    await History.create(id_user, id_video);
-    return res.status(201).json({ message: 'Ajouté à l’historique.' });
+    await History.create(user_id, video_id);
+    return res.status(201).json({ message: 'Ajoute a l historique.' });
   } catch (err) {
-    return res.status(500).json({ error: err.sqlMessage });
+    console.error('Erreur addToHistory:', err);
+    return res.status(500).json({ error: err.sqlMessage || err.message });
   }
 };
 
 exports.updateHistory = async (req, res) => {
-  const id_history = req.params.id_history;
-  const { id_video } = req.body;
+  const id = req.params.id;
+  const { video_id } = req.body;
 
-  if (!id_video)
-    return res.status(400).json({ error: 'id_video manquant.' });
+  if (!video_id)
+    return res.status(400).json({ error: 'video_id manquant.' });
 
   try {
-    await History.update(id_history, id_video);
-    return res.json({ message: 'Historique mis à jour.' });
+    await History.update(id, video_id);
+    return res.json({ message: 'Historique mis a jour.' });
   } catch (err) {
-    return res.status(500).json({ error: err.sqlMessage });
+    console.error('Erreur updateHistory:', err);
+    return res.status(500).json({ error: err.sqlMessage || err.message });
   }
 };
 
 exports.deleteHistory = async (req, res) => {
-  const id_user = req.user.id;
-  const id_video = req.params.id_video;
+  const user_id = req.user.id;
+  const video_id = req.params.video_id;
 
   try {
-    await History.delete(id_user, id_video);
-    return res.json({ message: 'Historique supprimé.' });
+    await History.delete(user_id, video_id);
+    return res.json({ message: 'Historique supprime.' });
   } catch (err) {
-    return res.status(500).json({ error: err.sqlMessage });
+    console.error('Erreur deleteHistory:', err);
+    return res.status(500).json({ error: err.sqlMessage || err.message });
   }
 };
 
 exports.getUserHistory = async (req, res) => {
-  const id_user = req.user.id;
+  const user_id = req.user.id;
 
   try {
-    const [rows] = await History.getAllByUser(id_user);
+    const [rows] = await History.getAllByUser(user_id);
     return res.json(rows);
   } catch (err) {
-    return res.status(500).json({ error: err.sqlMessage });
+    console.error('Erreur getUserHistory:', err);
+    return res.status(500).json({ error: err.sqlMessage || err.message });
+  }
+};
+
+exports.clearAllHistory = async (req, res) => {
+  const user_id = req.user.id;
+
+  try {
+    await History.deleteAll(user_id);
+    return res.json({ message: 'Tout l historique a ete supprime.' });
+  } catch (err) {
+    console.error('Erreur clearAllHistory:', err);
+    return res.status(500).json({ error: err.sqlMessage || err.message });
   }
 };

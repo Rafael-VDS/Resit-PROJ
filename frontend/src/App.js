@@ -5,6 +5,10 @@ import HomePage from './pages/HomePage';
 import VideoPage from './pages/VideoPage';
 import VoidPage from './pages/VoidPage';
 import ChannelPage from './pages/ChannelPage';
+import AddVideoPage from './pages/AddVideoPage';
+import HistoryPage from './pages/HistoryPage';
+import PlaylistPage from './pages/PlaylistPage';
+import SubscribersPage from './pages/SubscribersPage';
 
 function App() {
   return (
@@ -15,7 +19,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/video/:id" element={<VideoPage />} />
         <Route path="/void" element={<VoidPage />} />
-        <Route path="/channel" element={<ChannelPage />} />
+        <Route path="/channel/:username" element={<ChannelPage />} />
+        <Route path="/add-video" element={<AddVideoPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+        <Route path="/playlists" element={<PlaylistPage />} />
+        <Route path="/subscriptions" element={<SubscribersPage />} />
       </Routes>
     </Router>
   );

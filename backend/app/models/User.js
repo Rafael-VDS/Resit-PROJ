@@ -13,10 +13,20 @@ const User = {
     return pool.query(sql, [email]);
   },
 
+  // 🔍 Trouver un utilisateur par username
+  findByUsername: (username) => {
+    const sql = `
+      SELECT id, email, username, image, description, created_at, username AS channel_name
+      FROM Users
+      WHERE username = ?
+    `;
+    return pool.query(sql, [username]);
+  },
+
   // 🔍 Trouver un utilisateur par ID (inclut chaîne)
   findById: (id) => {
     const sql = `
-      SELECT id, email, username, image, created_at, username AS channel_name
+      SELECT id, email, username, image, description, created_at, username AS channel_name
       FROM Users
       WHERE id = ?
     `;

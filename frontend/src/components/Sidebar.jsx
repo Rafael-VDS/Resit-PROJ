@@ -1,4 +1,4 @@
-import { FaHome, FaList, FaPlay } from 'react-icons/fa';
+import { FaHome, FaList, FaPlay, FaUsers } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 export default function Sidebar() {
@@ -6,8 +6,9 @@ export default function Sidebar() {
     <aside style={{ width: '200px', backgroundColor: '#222', padding: '10px' }}>
       <h1 style={{ fontSize: '18px', marginBottom: '20px' }}>FreeTube</h1>
       <SidebarItem icon={<FaHome />} label="Accueil" to="/" />
-      <SidebarItem icon={<FaPlay />} label="Playlists" />
-      <SidebarItem icon={<FaList />} label="Historique" />
+      <SidebarItem icon={<FaPlay />} label="Playlists" to="/playlists" />
+      <SidebarItem icon={<FaList />} label="Historique" to="/history" />
+      <SidebarItem icon={<FaUsers />} label="Abonnements" to="/subscriptions" />
     </aside>
   );
 }

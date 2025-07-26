@@ -4,8 +4,9 @@ const auth = require('../middleware/authMiddleware');
 const historyController = require('../controllers/historyController');
 
 router.post('/', auth, historyController.addToHistory);
-router.put('/:id_history', auth, historyController.updateHistory);
-router.delete('/:id_video', auth, historyController.deleteHistory);
+router.put('/:id', auth, historyController.updateHistory);
+router.delete('/:video_id', auth, historyController.deleteHistory);
+router.delete('/', auth, historyController.clearAllHistory);
 router.get('/', auth, historyController.getUserHistory);
 
 module.exports = router;

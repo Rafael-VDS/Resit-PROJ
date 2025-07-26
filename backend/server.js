@@ -36,6 +36,7 @@ app.use(
   express.static(path.join(__dirname, 'upload/image/video_image'))
 );
 app.use('/upload/video', express.static(path.join(__dirname, 'upload/video')));
+app.use('/upload/image', express.static(path.join(__dirname, 'upload/image')));
 
 // 📶 Middleware global
 app.use(cors());

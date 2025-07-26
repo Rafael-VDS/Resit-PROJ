@@ -5,6 +5,17 @@ export default function Navbar() {
   const isLoggedIn = !!token;
   const navigate = useNavigate();
 
+  // Récupérer le username depuis le token
+  let currentUsername = null;
+  if (token) {
+    try {
+      const tokenData = JSON.parse(atob(token.split('.')[1]));
+      currentUsername = tokenData.username;
+    } catch (err) {
+      console.error("Erreur décodage token:", err);
+    }
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/'); // redirige vers l'accueil
@@ -30,7 +41,7 @@ export default function Navbar() {
         {isLoggedIn ? (
           <>
             <Link
-              to="/channel"
+              to={currentUsername ? `/channel/@${currentUsername}` : '/channel'}
               style={{
                 color: 'white',
                 backgroundColor: 'gray',

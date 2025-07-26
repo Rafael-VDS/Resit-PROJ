@@ -4,11 +4,13 @@ const fs = require('fs');
 
 // Dossiers de destination
 const videoDir = path.join(__dirname, '..', '..', 'upload', 'video');
-const imageDir = path.join(__dirname, '..', '..', 'upload', 'image', 'video_image');
+const videoImageDir = path.join(__dirname, '..', '..', 'upload', 'image', 'video_image');
+const profileImageDir = path.join(__dirname, '..', '..', 'upload', 'image');
 
 // Création des dossiers si pas existants
 if (!fs.existsSync(videoDir)) fs.mkdirSync(videoDir, { recursive: true });
-if (!fs.existsSync(imageDir)) fs.mkdirSync(imageDir, { recursive: true });
+if (!fs.existsSync(videoImageDir)) fs.mkdirSync(videoImageDir, { recursive: true });
+if (!fs.existsSync(profileImageDir)) fs.mkdirSync(profileImageDir, { recursive: true });
 
 // Logique de destination dynamique
 const storage = multer.diskStorage({
@@ -16,7 +18,13 @@ const storage = multer.diskStorage({
     if (file.mimetype.startsWith('video/')) {
       cb(null, videoDir);
     } else if (file.mimetype.startsWith('image/')) {
-      cb(null, imageDir);
+      // Si c'est une image de profil (fieldname = profileImage)
+      if (file.fieldname === 'profileImage') {
+        cb(null, profileImageDir);
+      } else {
+        // Sinon, c'est une thumbnail de vidéo
+        cb(null, videoImageDir);
+      }
     } else {
       cb(new Error('Fichier non supporté'), null);
     }

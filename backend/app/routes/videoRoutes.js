@@ -21,6 +21,7 @@ router.delete('/:id', auth, videoController.deleteVideo);
 
 router.get('/public', videoController.getPublicVideo);
 router.get('/private', auth, videoController.getPrivateVideo);
+router.get('/user/all', auth, videoController.getAllUserVideos);
 router.get('/:id', videoController.getVideoById);
 
 module.exports = router;

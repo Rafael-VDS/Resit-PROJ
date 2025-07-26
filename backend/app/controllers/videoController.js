@@ -145,3 +145,15 @@ exports.getPrivateVideo = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+// 🏠 Récupérer toutes les vidéos d'un utilisateur (pour sa page de chaîne)
+exports.getAllUserVideos = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const [videos] = await Video.getAllByUser(userId, 50);
+    return res.json(videos);
+  } catch (err) {
+    console.error("❌ Erreur getAllUserVideos :", err);
+    return res.status(500).json({ error: err.message });
+  }
+};

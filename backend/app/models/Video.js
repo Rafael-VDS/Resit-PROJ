@@ -22,9 +22,14 @@ const Video = {
     return pool.query(sql, [id_video]);
   },
 
-  // 🔍 Récupérer les vidéos par utilisateur
+  // 🔍 Récupérer une vidéo par ID avec infos créateur
   getById: (id_video) => {
-    const sql = 'SELECT * FROM Videos WHERE id = ?';
+    const sql = `
+      SELECT v.*, u.username, u.image as creator_image 
+      FROM Videos v 
+      JOIN Users u ON v.user_id = u.id 
+      WHERE v.id = ?
+    `;
     if (isNaN(id_video)) {
       return res.status(400).json({ error: 'ID invalide.' });
     }
@@ -47,6 +52,17 @@ const Video = {
     const sql = `
       SELECT * FROM Videos
       WHERE is_public = 0 AND user_id = ?
+      ORDER BY id DESC
+      LIMIT ?
+    `;
+    return pool.query(sql, [user_id, limit]);
+  },
+
+  // 🏠 Toutes les vidéos d'un utilisateur (publiques et privées)
+  getAllByUser: (user_id, limit = 50) => {
+    const sql = `
+      SELECT * FROM Videos
+      WHERE user_id = ?
       ORDER BY id DESC
       LIMIT ?
     `;

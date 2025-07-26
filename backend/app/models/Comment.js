@@ -1,19 +1,30 @@
 const pool = require('../database/db');
 
 const Comment = {
-  create: (id_user, id_video, content) => {
-    const sql = 'INSERT INTO Comments (id_user, id_video, content) VALUES (?, ?, ?)';
-    return pool.query(sql, [id_user, id_video, content]);
+  create: (user_id, video_id, content) => {
+    const sql = 'INSERT INTO Comments (user_id, video_id, content) VALUES (?, ?, ?)';
+    return pool.query(sql, [user_id, video_id, content]);
   },
 
-  update: (id_comment, id_user, content) => {
-    const sql = 'UPDATE Comments SET content = ? WHERE id_comment = ? AND id_user = ?';
-    return pool.query(sql, [content, id_comment, id_user]);
+  update: (comment_id, user_id, content) => {
+    const sql = 'UPDATE Comments SET content = ? WHERE id = ? AND user_id = ?';
+    return pool.query(sql, [content, comment_id, user_id]);
   },
 
-  delete: (id_comment, id_user) => {
-    const sql = 'DELETE FROM Comments WHERE id_comment = ? AND id_user = ?';
-    return pool.query(sql, [id_comment, id_user]);
+  delete: (comment_id, user_id) => {
+    const sql = 'DELETE FROM Comments WHERE id = ? AND user_id = ?';
+    return pool.query(sql, [comment_id, user_id]);
+  },
+
+  getByVideoId: (video_id) => {
+    const sql = `
+      SELECT c.*, u.username, u.image as user_image 
+      FROM Comments c 
+      JOIN Users u ON c.user_id = u.id 
+      WHERE c.video_id = ? 
+      ORDER BY c.created_at DESC
+    `;
+    return pool.query(sql, [video_id]);
   }
 };
 

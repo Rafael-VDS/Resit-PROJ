@@ -7,6 +7,17 @@ export default function HomePage() {
   const [videos, setVideos] = useState([]);
   const serverIp = process.env.REACT_APP_SERVER_IP;
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Date inconnue';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Date invalide';
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   useEffect(() => {
     fetch(`${serverIp}/api/videos/public`)
       .then((res) => res.json())
@@ -46,6 +57,9 @@ export default function HomePage() {
                   />
                   <div style={{ padding: '5px' }}>
                     <h2 style={{ fontSize: '14px' }}>{video.title}</h2>
+                    <p style={{ fontSize: '12px', color: '#ccc', marginTop: '3px' }}>
+                      {formatDate(video.created_at)}
+                    </p>
                   </div>
                 </Link>
               ))}

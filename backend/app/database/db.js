@@ -102,23 +102,58 @@ pool.getConnection(async (err, connection) => {
                 video_id INT NOT NULL,
                 viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
-                FOREIGN KEY (video_id) REFERENCES Videos(id) ON DELETE CASCADE
+                FOREIGN KEY (video_id) REFERENCES Videos(id) ON DELETE CASCADE,
+                UNIQUE (user_id, video_id)
             )`,
 
             `CREATE TABLE IF NOT EXISTS Subscriptions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT NOT NULL,
-                target_user_id INT NOT NULL,
+                channel_id INT NOT NULL,
                 subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
-                FOREIGN KEY (target_user_id) REFERENCES Users(id) ON DELETE CASCADE,
-                UNIQUE (user_id, target_user_id)
+                FOREIGN KEY (channel_id) REFERENCES Users(id) ON DELETE CASCADE,
+                UNIQUE (user_id, channel_id)
             )`
         ];
 
         
         for (const query of tables) {
             await connection.promise().query(query);
+        }
+
+        // Migration pour nettoyer les doublons dans History et ajouter la contrainte unique
+        try {
+            // Supprimer les doublons en gardant seulement le plus récent
+            await connection.promise().query(`
+                DELETE h1 FROM History h1
+                INNER JOIN History h2 
+                WHERE h1.user_id = h2.user_id 
+                AND h1.video_id = h2.video_id 
+                AND h1.viewed_at < h2.viewed_at
+            `);
+            
+            // Ajouter la contrainte unique si elle n'existe pas déjà
+            await connection.promise().query(`
+                ALTER TABLE History 
+                ADD CONSTRAINT unique_user_video 
+                UNIQUE (user_id, video_id)
+            `);
+            console.log("✅ Migration History appliquée avec succès !");
+        } catch (migrationError) {
+            // La contrainte existe probablement déjà
+            console.log("ℹ️ Migration History : contrainte unique déjà présente");
+        }
+
+        // Migration pour renommer target_user_id en channel_id dans Subscriptions
+        try {
+            await connection.promise().query(`
+                ALTER TABLE Subscriptions CHANGE target_user_id channel_id INT NOT NULL
+            `);
+            console.log("✅ Migration Subscriptions appliquée avec succès !");
+        } catch (migrationError) {
+            // La colonne a déjà été renommée ou n'existe pas
+            console.log("ℹ️ Migration Subscriptions : colonne channel_id déjà présente");
         }
 
         console.log("✅ Toutes les tables ont été vérifiées/créées !");
